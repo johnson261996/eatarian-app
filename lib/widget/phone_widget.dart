@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:eatarian_app/widget/home_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -124,7 +125,7 @@ class _PhoneWidgetState extends State<PhoneWidget> {
   }
 
   //Method for verify otp entered by user
-  Future<void> verifyOtp() async {
+  Future<void> verifyOtp(BuildContext c) async {
     if (smsOTP == null || smsOTP == '') {
       showAlertDialog(context, 'please enter 6 digit otp');
       return;
@@ -137,7 +138,11 @@ class _PhoneWidgetState extends State<PhoneWidget> {
       final UserCredential user = await _auth.signInWithCredential(credential);
       final User? currentUser = await _auth.currentUser;
       assert(user.user?.uid == currentUser?.uid);
-      Navigator.pushReplacementNamed(context, '/homeScreen');
+     // Navigator.pushReplacementNamed(context, '/homeScreen');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (c) =>  HomeScreen(currentUser,null)),
+      );
     } catch (e) {
       handleError(e as PlatformException);
     }
@@ -304,7 +309,7 @@ class _PhoneWidgetState extends State<PhoneWidget> {
               height: 10,
             ),
             GestureDetector(
-              onTap: () => verifyOtp(),
+              onTap: () => verifyOtp(context),
               child: Container(
                 margin: const EdgeInsets.all(8),
                 height: 45,

@@ -1,9 +1,11 @@
 
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:email_auth/email_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
+
+import 'home_widget.dart';
 
 class EmailWidget extends StatefulWidget {
   const EmailWidget({Key? key}) : super(key: key);
@@ -70,13 +72,18 @@ class _EmailWidgetState extends State<EmailWidget> {
     );
   }
 
-
+// a void function to verify if the Data provided is true
+  /// Convert it into a boolean function to match your needs.
   void verify() {
     bool result= emailAuth.validateOtp(
         recipientMail: _emailcontroller.value.text,
         userOtp: emailOTP);
     if(result){
-      Navigator.pushReplacementNamed(context, '/homeScreen');
+     // Navigator.pushReplacementNamed(context, '/homeScreen');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (c) =>  HomeScreen(null,_emailcontroller.text)),
+      );
     }else{
       print("email auth:$result");
     }
@@ -205,7 +212,11 @@ class _EmailWidgetState extends State<EmailWidget> {
               height: 10,
             ),
             GestureDetector(
-              onTap: () {verify();},
+              onTap: () async {
+                verify();
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString('email',_emailcontroller.text );
+                },
               child: Container(
                 margin: const EdgeInsets.all(8),
                 height: 45,
